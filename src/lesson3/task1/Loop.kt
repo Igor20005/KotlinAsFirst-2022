@@ -2,6 +2,8 @@
 
 package lesson3.task1
 
+import kotlin.math.PI
+import kotlin.math.abs
 import kotlin.math.sqrt
 
 // Урок 3: циклы
@@ -225,7 +227,18 @@ fun isPalindrome(n: Int): Boolean {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun hasDifferentDigits(n: Int): Boolean = TODO()
+fun hasDifferentDigits(n: Int): Boolean {
+    val c1 = n % 10
+    var n1 = n / 10
+    while (n1 > 0) {
+        val c = n1 % 10
+        if (c != c1)
+            return true
+        n1 /= 10
+
+    }
+    return false
+}
 
 /**
  * Средняя (4 балла)
@@ -236,7 +249,19 @@ fun hasDifferentDigits(n: Int): Boolean = TODO()
  * Подумайте, как добиться более быстрой сходимости ряда при больших значениях x.
  * Использовать kotlin.math.sin и другие стандартные реализации функции синуса в этой задаче запрещается.
  */
-fun sin(x: Double, eps: Double): Double = TODO()
+fun sin(x1: Double, eps: Double): Double {
+    val x = x1 % (2 * PI)
+    var i = 1
+    var a = x
+    var s = a
+
+    while (abs(a) > eps) {
+        a *= -x * x / (i + 1) / (i + 2)
+        s += a
+        i += 2
+    }
+    return s
+}
 
 /**
  * Средняя (4 балла)
@@ -247,7 +272,19 @@ fun sin(x: Double, eps: Double): Double = TODO()
  * Подумайте, как добиться более быстрой сходимости ряда при больших значениях x.
  * Использовать kotlin.math.cos и другие стандартные реализации функции косинуса в этой задаче запрещается.
  */
-fun cos(x: Double, eps: Double): Double = TODO()
+fun cos(x1: Double, eps: Double): Double {
+    val x = x1 % (2 * PI)
+    var i = 0
+    var a = 1.0
+    var s = a
+
+    while (abs(a) > eps) {
+        a *= -x * x / (i + 1) / (i + 2)
+        s += a
+        i += 2
+    }
+    return s
+}
 
 /**
  * Сложная (4 балла)
@@ -258,7 +295,36 @@ fun cos(x: Double, eps: Double): Double = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun squareSequenceDigit(n: Int): Int = TODO()
+fun squareSequenceDigit(n1: Int): Int {
+    fun number(k: Int): Int = k * k
+    var n = n1
+    fun d2(k: Int): Int = digitNumber(number(k))
+
+    fun cutBrick(n: Int, k: Int = 1): Array<Int> {
+        if (n <= 0)
+            return arrayOf(n, k)
+        return arrayOf(n - d2(k), k + 1)
+    }
+
+    var k = 1
+    //println("n =$n , k =$k")
+    while (n > 0) {
+        val A = cutBrick(n, k)
+        n = A[0]
+        k = A[1]
+        //println("n =$n , k =$k")
+    }
+    var m = n1
+    var k2 = number(k - 1)
+    var c = k2 % 10
+    k2 /= 10
+    while (n < 0) {
+        n += 1
+        c = k2 % 10
+        k2 /= 10
+    }
+    return c
+}
 
 /**
  * Сложная (5 баллов)
@@ -269,4 +335,35 @@ fun squareSequenceDigit(n: Int): Int = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun fibSequenceDigit(n: Int): Int = TODO()
+
+fun fibSequenceDigit(n1: Int): Int {
+    var n = n1
+    fun number(k: Int): Int = fib(k)
+
+    fun d2(k: Int): Int = digitNumber(number(k))
+
+    fun cutBrick(n: Int, k: Int = 1): Array<Int> {
+        if (n <= 0)
+            return arrayOf(n, k)
+        return arrayOf(n - d2(k), k + 1)
+    }
+
+    var k = 1
+    //println("n =$n , k =$k")
+    while (n > 0) {
+        val A = cutBrick(n, k)
+        n = A[0]
+        k = A[1]
+        //println("n =$n , k =$k")
+    }
+    var m = n1
+    var k2 = number(k - 1)
+    var c = k2 % 10
+    k2 /= 10
+    while (n < 0) {
+        n += 1
+        c = k2 % 10
+        k2 /= 10
+    }
+    return c
+}
