@@ -1,4 +1,4 @@
-@file:Suppress("UNUSED_PARAMETER")
+@file:Suppress("UNUSED_PARAMETER", "NAME_SHADOWING")
 
 package lesson2.task2
 
@@ -27,9 +27,7 @@ fun isNumberHappy(N: Int): Boolean {
     val n2: Int = N % 100 / 10
     val n3: Int = N % 1000 / 100
     val n4: Int = N / 1000
-    print("${n1}, $n2 , ${n3}, ${n4}, $N")
-    println()
-    return ((n1 + n2) == (n3 + n4))
+    return (n1 + n2 == n3 + n4)
 
 }
 
@@ -93,11 +91,10 @@ fun circleInside(
  * Вернуть true, если кирпич пройдёт
  */
 fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean {
-    val A: Int = min(min(a, b), c)
-    val C: Int = max(max(a, b), c)
-    val B: Int = (a + b + c) - A - C
-    val R: Int = min(r, s)
-    val S: Int = max(r, s)
-    val res = ((A <= R) && (B <= S))
-    return res
+    val a: Int = min(min(a, b), c)
+    val c: Int = max(max(a, b), c)
+    val b: Int = (a + b + c) - a - c
+    val r: Int = min(r, s)
+    val s: Int = max(r, s)
+    return ((a <= r) && (b <= s))
 }

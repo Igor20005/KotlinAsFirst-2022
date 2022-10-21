@@ -309,9 +309,9 @@ fun squareSequenceDigit(n1: Int): Int {
     var k = 1
     //println("n =$n , k =$k")
     while (n > 0) {
-        val A = cutBrick(n, k)
-        n = A[0]
-        k = A[1]
+        val a = cutBrick(n, k)
+        n = a[0]
+        k = a[1]
         //println("n =$n , k =$k")
     }
     var m = n1
@@ -351,9 +351,9 @@ fun fibSequenceDigit(n1: Int): Int {
     var k = 1
     //println("n =$n , k =$k")
     while (n > 0) {
-        val A = cutBrick(n, k)
-        n = A[0]
-        k = A[1]
+        val a = cutBrick(n, k)
+        n = a[0]
+        k = a[1]
         //println("n =$n , k =$k")
     }
     var m = n1
