@@ -428,170 +428,57 @@ fun roman(n1: Int): String {
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
 fun russian(n: Int): String {
-    var s = ""
-    fun f1(n: Int, t: Boolean): String {
-        if (n >= 900) {
-            s += " девятьсот"
-            return f1(n - 900, t)
-        }
-        if (n >= 800) {
-            s += " восемьсоть"
-            return f1(n - 800, t)
-        }
-        if (n >= 700) {
-            s += " семьсот"
-            return f1(n - 700, t)
-        }
-        if (n >= 600) {
-            s += " шестьсот"
-            return f1(n - 600, t)
-        }
-        if (n >= 500) {
-            s += " пятьсот"
-            return f1(n - 500, t)
-        }
-        if (n >= 400) {
-            s += " четыреста"
-            return f1(n - 400, t)
-        }
-        if (n >= 300) {
-            s += " триста"
-            return f1(n - 300, t)
-        }
-        if (n >= 200) {
-            s += " двести"
-            return f1(n - 200, t)
-        }
-        if (n >= 100) {
-            s += " сто"
-            return f1(n - 100, t)
-        }
-        if (n >= 90) {
-            s += " девяносто"
-            return f1(n - 90, t)
-        }
-        if (n >= 80) {
-            s += " восемьдесят"
-            return f1(n - 80, t)
-        }
-        if (n >= 70) {
-            s += " семьдесят"
-            return f1(n - 70, t)
-        }
-        if (n >= 60) {
-            s += " шестьдесят"
-            return f1(n - 60, t)
-        }
-        if (n >= 50) {
-            s += " пятьсят"
-            return f1(n - 50, t)
-        }
-        if (n >= 40) {
-            s += " сорок"
-            return f1(n - 40, t)
-        }
-        if (n >= 30) {
-            s += " тридцать"
-            return f1(n - 30, t)
-        }
-        if (n >= 20) {
-            s += " двадцать"
-            return f1(n - 20, t)
-        }
-        if (n == 1) {
-            s += if (t) " одна тысяча "
-            else " один"
-            return ""
-        }
-        if (n == 2) {
-            s += if (t) " две тысяча "
-            else " два"
-            return ""
-        }
-
-        when (n) {
-            3 -> {
-                s += " три"
-            }
-
-            4 -> {
-                s += " четыре"
-            }
-
-            5 -> {
-                s += " пять"
-            }
-
-            6 -> {
-                s += " шесть"
-            }
-
-            7 -> {
-                s += " семь"
-            }
-
-            8 -> {
-                s += " восемь"
-            }
-
-            9 -> {
-                s += " девять"
-            }
-
-            10 -> {
-                s += " десять"
-            }
-
-            11 -> {
-                s += " одиннадцать"
-            }
-
-            12 -> {
-                s += " двенадцать"
-            }
-
-            13 -> {
-                s += " тринадцать"
-            }
-
-            14 -> {
-                s += " четырнадцать"
-            }
-
-            15 -> {
-                s += " пятнадцать"
-            }
-
-            16 -> {
-                s += " шестнадцать"
-            }
-
-            17 -> {
-                s += " семнадцать"
-            }
-
-            18 -> {
-                s += " восемнадцать"
-            }
-
-            19 -> {
-                s += " девятнадцать"
-            }
-        }
-        if (t) s += " тысяч "
-        return ""
+    val result = mutableListOf<String>()
+    val part1 = n / 1000
+    if (part1 > 0) {
+        result.addAll(russianMiddle(part1, units))
+        if ((part1 % 10 == 1) && (part1 / 10 % 10 != 1)) result.add("тысяча")
+        else if ((((part1 % 100) / 10) != 1) && (((part1 % 10) == 2) || ((part1 % 10) == 3) || ((part1 % 10) == 4)))
+            result.add(
+                "тысячи"
+            )
+        else result.add("тысяч")
     }
+    val part2 = n % 1000
+    result.addAll(russianMiddle(part2, units2))
+    return result.joinToString(separator = " ")
+}
 
-    var st = ""
-    val nt: Int = n / 1000
-    if (nt > 0) {
-        f1(nt, true)
-        st = s
+val hundreds =
+    listOf("сто", "двести", "триста", "четыреста", "пятьсот", "шестьсот", "семьсот", "восемьсот", "девятьсот")
+val tens = listOf("двадцать", "тридцать", "сорок", "пятьдесят", "шестьдесят", "семьдесят", "восемьдесят", "девяносто")
+val tens2 = listOf(
+    "десять",
+    "одиннадцать",
+    "двенадцать",
+    "тринадцать",
+    "четырнадцать",
+    "пятнадцать",
+    "шестнадцать",
+    "семнадцать",
+    "восемнадцать",
+    "девятнадцать"
+)
+val units = listOf("одна", "две", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять")
+val units2 = listOf("один", "два", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять")
+
+fun russianMiddle(middle: Int, unit: List<String>): List<String> {
+    val result = mutableListOf<String>()
+    if (middle / 100 >= 1) {
+        val hd = middle / 100
+        result.add(hundreds[hd - 1])
     }
-    s = ""
-    val ne: Int = n % 1000
-    f1(ne, false)
-    val se: String = s
-    return (st + se.trim()).trim()
-
+    if (middle % 100 / 10 == 1) {
+        val tn1 = middle % 10
+        result.add(tens2[tn1])
+    } else if (middle % 100 / 10 == 0) {
+        val un = middle % 10
+        if (un >= 1) result.add(unit[un - 1])
+    } else {
+        val tn = middle % 100 / 10
+        result.add(tens[tn - 2])
+        val un = middle % 10
+        if (un >= 1) result.add(unit[un - 1])
+    }
+    return result
 }
