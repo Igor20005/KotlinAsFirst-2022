@@ -499,7 +499,7 @@ fun russian(n: Int): String {
             return f1(n - 20, t)
         }
         if (n == 1) {
-            s += if (t) " одна тысячи "
+            s += if (t) " одна тысяча "
             else " один"
             return ""
         }
