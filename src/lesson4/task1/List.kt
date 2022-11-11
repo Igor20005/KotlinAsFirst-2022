@@ -269,15 +269,14 @@ fun factorizeToString(n: Int): String {
  * Результат перевода вернуть в виде списка цифр в base-ичной системе от старшей к младшей,
  * например: n = 100, base = 4 -> (1, 2, 1, 0) или n = 250, base = 14 -> (1, 3, 12)
  */
-fun convert(n1: Int, base: Int): List<Int> {
-    val l: MutableList<Int> = mutableListOf()
-    var n = n1
-    while (n > 0) {
-        val d = n % base
-        l.add(0, d)
-        n /= base
+fun convert(n: Int, base: Int): List<Int> {
+    val b = mutableListOf<Int>()
+    var n1 = n
+    while (n1 > 0) {
+        b.add(n1 % base)
+        n1 /= base
     }
-    return l
+    return if (n == 0) return listOf(0) else b.reversed()
 }
 
 /**
@@ -292,34 +291,13 @@ fun convert(n1: Int, base: Int): List<Int> {
  * (например, n.toString(base) и подобные), запрещается.
  */
 fun convertToString(n: Int, base: Int): String {
-    fun num2c(n: Int): Char {
-        val c = 'a'
-        val ic: Int = c.code
-        val ic2: Int = ic + n
-        return ic2.toChar()
-    }
-
-    fun num2cd(n: Int): Char {
-        val c = '0'
-        val ic: Int = c.code
-        val ic2: Int = ic + n
-        return ic2.toChar()
-    }
-
-    fun num2d(n: Int): Char {
-        if (n < 10)
-            return num2cd(n)
-        return num2c(n - 10)
-    }
-
-    val l: List<Int> = convert(n, base)
-    l[0]
-    val c: Char = num2d(l[0])
-    var s: String = c.toString()
-    for (i in 1 until l.size) {
-        s += num2d(l[i]).toString()
-    }
-    return s
+    val list = convert(n, base)
+    val abc = "abcdefghijklmnopqrstuvwxyz"
+    var str = ""
+    for (i in list.indices)
+        str += if (list[i] < 10) list[i] else
+            abc[list[i] - 10]
+    return str
 }
 
 
