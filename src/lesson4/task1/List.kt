@@ -291,7 +291,37 @@ fun convert(n1: Int, base: Int): List<Int> {
  * Использовать функции стандартной библиотеки, напрямую и полностью решающие данную задачу
  * (например, n.toString(base) и подобные), запрещается.
  */
-fun convertToString(n: Int, base: Int): String = TODO()
+fun convertToString(n: Int, base: Int): String {
+    fun num2c(n: Int): Char {
+        val c = 'a'
+        val ic: Int = c.code
+        val ic2: Int = ic + n
+        return ic2.toChar()
+    }
+
+    fun num2cd(n: Int): Char {
+        val c = '0'
+        val ic: Int = c.code
+        val ic2: Int = ic + n
+        return ic2.toChar()
+    }
+
+    fun num2d(n: Int): Char {
+        if (n < 10)
+            return num2cd(n)
+        return num2c(n - 10)
+    }
+
+    val l: List<Int> = convert(n, base)
+    l[0]
+    val c: Char = num2d(l[0])
+    var s: String = c.toString()
+    for (i in 1 until l.size) {
+        s += num2d(l[i]).toString()
+    }
+    return s
+}
+
 
 /**
  * Средняя (3 балла)
@@ -300,7 +330,18 @@ fun convertToString(n: Int, base: Int): String = TODO()
  * из системы счисления с основанием base в десятичную.
  * Например: digits = (1, 3, 12), base = 14 -> 250
  */
-fun decimal(digits: List<Int>, base: Int): Int = TODO()
+fun decimal(digits: List<Int>, base: Int): Int {
+    val n = digits.size
+    if (n == 0)
+        return 0
+
+    var s: Int = digits[0]
+    for (i in 1 until n) {
+        s *= base
+        s += digits[i]
+    }
+    return s
+}
 
 /**
  * Сложная (4 балла)
@@ -314,7 +355,33 @@ fun decimal(digits: List<Int>, base: Int): Int = TODO()
  * Использовать функции стандартной библиотеки, напрямую и полностью решающие данную задачу
  * (например, str.toInt(base)), запрещается.
  */
-fun decimalFromString(str: String, base: Int): Int = TODO()
+fun decimalFromString(str: String, base: Int): Int {
+    fun c2num(c: Char): Int {
+        val a = 'a'
+
+        return c.code - a.code + 10
+    }
+
+    fun cd2num(c: Char): Int {
+        val c0 = '0'
+
+        return c.code - c0.code
+    }
+
+    fun d2num(c: Char): Int {
+        if (c.isDigit())
+            return cd2num(c)
+        return c2num(c)
+    }
+    //fun decimal(digits: List<Int>, base: Int): Int {
+    val l: MutableList<Int> = mutableListOf(d2num(str[0]))
+    for (i: Int in 1 until str.length) {
+        l.add(d2num(str[i]))
+
+    }
+    //fun decimal(digits: List<Int>, base: Int): Int {
+    return decimal(l, base)
+}
 
 /**
  * Сложная (5 баллов)
@@ -324,7 +391,56 @@ fun decimalFromString(str: String, base: Int): Int = TODO()
  * 90 = XC, 100 = C, 400 = CD, 500 = D, 900 = CM, 1000 = M.
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
-fun roman(n: Int): String = TODO()
+fun roman(n1: Int): String {
+    var s = ""
+    fun rom(n: Int): Int {
+        if (n >= 1000) {
+            s += "M"
+            return rom(n - 1000)
+        } else if (n >= 900) {
+            s += "CM"
+            return rom(n - 900)
+        } else if (n >= 500) {
+            s += "D"
+            return rom(n - 500)
+        } else if (n >= 400) {
+            s += "CD"
+            return rom(n - 400)
+        } else if (n >= 100) {
+            s += "C"
+            return rom(n - 100)
+        } else if (n >= 90) {
+            s += "XC"
+            return rom(n - 90)
+        } else if (n >= 50) {
+            s += "L"
+            return rom(n - 50)
+        } else if (n >= 40) {
+            s += "XL"
+            return rom(n - 40)
+        } else if (n >= 10) {
+            s += "X"
+            return rom(n - 10)
+        } else if (n >= 9) {
+            s += "IX"
+            return rom(n - 9)
+        } else if (n >= 5) {
+            s += "V"
+            return rom(n - 5)
+        } else if (n >= 4) {
+            s += "IV"
+            return rom(n - 4)
+        } else if (n >= 1) {
+            s += "I"
+            return rom(n - 1)
+        }
+
+        return 0
+    }
+    rom(n1)
+    return s
+
+}
 
 /**
  * Очень сложная (7 баллов)
@@ -333,4 +449,171 @@ fun roman(n: Int): String = TODO()
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-fun russian(n: Int): String = TODO()
+fun russian(n: Int): String {
+    var s = ""
+    fun f1(n: Int, t: Boolean): String {
+        if (n >= 900) {
+            s += " девятьсот"
+            return f1(n - 900, t)
+        }
+        if (n >= 800) {
+            s += " восемьсоть"
+            return f1(n - 800, t)
+        }
+        if (n >= 700) {
+            s += " семьсот"
+            return f1(n - 700, t)
+        }
+        if (n >= 600) {
+            s += " шестьсот"
+            return f1(n - 600, t)
+        }
+        if (n >= 500) {
+            s += " пятьсот"
+            return f1(n - 500, t)
+        }
+        if (n >= 400) {
+            s += " четыреста"
+            return f1(n - 400, t)
+        }
+        if (n >= 300) {
+            s += " триста"
+            return f1(n - 300, t)
+        }
+        if (n >= 200) {
+            s += " двести"
+            return f1(n - 200, t)
+        }
+        if (n >= 100) {
+            s += " сто"
+            return f1(n - 100, t)
+        }
+        if (n >= 90) {
+            s += " девяносто"
+            return f1(n - 90, t)
+        }
+        if (n >= 80) {
+            s += " восемьдесят"
+            return f1(n - 80, t)
+        }
+        if (n >= 70) {
+            s += " семьдесят"
+            return f1(n - 70, t)
+        }
+        if (n >= 60) {
+            s += " шестьдесят"
+            return f1(n - 60, t)
+        }
+        if (n >= 50) {
+            s += " пятьсят"
+            return f1(n - 50, t)
+        }
+        if (n >= 40) {
+            s += " сорок"
+            return f1(n - 40, t)
+        }
+        if (n >= 30) {
+            s += " тридцать"
+            return f1(n - 30, t)
+        }
+        if (n >= 20) {
+            s += " двадцать"
+            return f1(n - 20, t)
+        }
+        if (n == 1) {
+            s += if (t) " одна тысяча "
+            else " один"
+            return ""
+        }
+        if (n == 2) {
+            s += if (t) " две тысячи "
+            else " два"
+            return ""
+        }
+
+        when (n) {
+            3 -> {
+                s += " три"
+            }
+
+            4 -> {
+                s += " четыре"
+            }
+
+            5 -> {
+                s += " пять"
+            }
+
+            6 -> {
+                s += " шесть"
+            }
+
+            7 -> {
+                s += " семь"
+            }
+
+            8 -> {
+                s += " восемь"
+            }
+
+            9 -> {
+                s += " девять"
+            }
+
+            10 -> {
+                s += " десять"
+            }
+
+            11 -> {
+                s += " одиннадцать"
+            }
+
+            12 -> {
+                s += " двенадцать"
+            }
+
+            13 -> {
+                s += " тринадцать"
+            }
+
+            14 -> {
+                s += " четырнадцать"
+            }
+
+            15 -> {
+                s += " пятнадцать"
+            }
+
+            16 -> {
+                s += " шестнадцать"
+            }
+
+            17 -> {
+                s += " семнадцать"
+            }
+
+            18 -> {
+                s += " восемнадцать"
+            }
+
+            19 -> {
+                s += " девятнадцать"
+            }
+        }
+        if (t) s += " тысяч "
+        return ""
+    }
+
+    var st = ""
+    val nt: Int = n / 1000
+    if (nt > 0) {
+        f1(nt, true)
+        st = s
+    }
+    s = ""
+    val ne: Int = n % 1000
+    f1(ne, false)
+    val se: String = s
+    return (st + se.trim()).trim()
+
+}

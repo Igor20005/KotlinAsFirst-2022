@@ -216,7 +216,7 @@ fun revert(n: Int): Int {
  */
 fun isPalindrome(n: Int): Boolean {
     val m = revert(n)
-    return (m == n)
+    return m == n
 }
 
 /**
