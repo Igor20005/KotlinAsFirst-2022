@@ -526,7 +526,7 @@ fun russian(n: Int): String {
             return ""
         }
         if (n == 2) {
-            s += if (t) " две тысячи "
+            s += if (t) " две тысяча "
             else " два"
             return ""
         }
