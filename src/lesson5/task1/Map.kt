@@ -96,7 +96,19 @@ fun buildWordSet(text: List<String>): MutableSet<String> {
  *   buildGrades(mapOf("Марат" to 3, "Семён" to 5, "Михаил" to 5))
  *     -> mapOf(5 to listOf("Семён", "Михаил"), 3 to listOf("Марат"))
  */
-fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> = TODO()
+fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
+    val res = mutableMapOf<Int, List<String>>()
+    for (name: String in grades.keys) {
+        val grade: Int? = grades[name]
+        val rec: MutableList<String> = (res[grade] ?: mutableListOf()) as MutableList<String>
+        rec.add(name)
+        if (grade != null) {
+            res[grade] = rec
+        }
+    }
+    return res
+}
+
 /**
  * Простая (2 балла)
  *
@@ -281,7 +293,6 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
         return Pair(minOf(i, list.indexOf(number - list[i])), maxOf(i, list.indexOf(number - list[i])))
     return Pair(-1, -1)
 }
-
 
 /**
  * Очень сложная (8 баллов)
