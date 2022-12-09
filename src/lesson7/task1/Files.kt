@@ -3,6 +3,7 @@
 package lesson7.task1
 
 import java.io.File
+import java.util.*
 
 // Урок 7: работа с файлами
 // Урок интегральный, поэтому его задачи имеют сильно увеличенную стоимость
@@ -63,7 +64,15 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
  * Подчёркивание в середине и/или в конце строк значения не имеет.
  */
 fun deleteMarked(inputName: String, outputName: String) {
-    TODO()
+    val writer = File(outputName).bufferedWriter()
+    for (line in File(inputName).readLines()) {
+        if (line.isEmpty() || line[0] != '_') {
+            writer.write(line)
+            writer.newLine()
+        }
+
+    }
+    writer.close()
 }
 
 /**
@@ -75,7 +84,30 @@ fun deleteMarked(inputName: String, outputName: String) {
  * Регистр букв игнорировать, то есть буквы е и Е считать одинаковыми.
  *
  */
-fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> = TODO()
+fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
+    fun countAinB(a: String, b: String): Int {
+        var n = 0
+        var i = 0
+        var j: Int
+        j = b.indexOf(a, i)
+        while (j >= 0) {
+            n += 1
+            i = j + 1
+            j = b.indexOf(a, i)
+        }
+        return n
+    }
+
+    val map = mutableMapOf<String, Int>()
+    for (line in File(inputName).readLines()) {
+        for (s in substrings) {
+            map[s] = (map[s] ?: 0) + countAinB(s.lowercase(), line.lowercase())
+
+
+        }
+    }
+    return map
+}
 
 
 /**
@@ -92,7 +124,26 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
  *
  */
 fun sibilants(inputName: String, outputName: String) {
-    TODO()
+    val dictOfLetters = listOf('ж', 'ч', 'ш', 'щ')
+    val dictOfReplaceable = mapOf('ы' to 'и', 'я' to 'а', 'ю' to 'у')
+    val outputStream = File(outputName).bufferedWriter()
+    for (line in File(inputName).readLines()) {
+        var l = ""
+        var temp = ""
+        for (i in line.indices)
+            if (temp == "") {
+                if ((line[i].lowercaseChar() in dictOfLetters) && (i != line.length - 1))
+                    if (line[i + 1] in dictOfReplaceable.keys)
+                        temp = dictOfReplaceable[line[i + 1]].toString()
+                    else if (line[i + 1].lowercaseChar() in dictOfReplaceable.keys)
+                        temp = dictOfReplaceable[line[i + 1].lowercaseChar()].toString().uppercase(Locale.getDefault())
+                l += line[i].toString() + temp
+            } else
+                temp = ""
+        outputStream.write(l)
+        outputStream.newLine()
+    }
+    outputStream.close()
 }
 
 /**
@@ -113,7 +164,25 @@ fun sibilants(inputName: String, outputName: String) {
  *
  */
 fun centerFile(inputName: String, outputName: String) {
-    TODO()
+    fun lx(l: Int, x: Int): Int = (l - x) / 2
+    var max = 0
+    for (line in File(inputName).readLines()) {
+        val n = line.trim().length
+        if (n > max) max = n
+
+    }
+    val writer = File(outputName).bufferedWriter()
+    for (line in File(inputName).readLines()) {
+        val line2 = line.trim()
+        val n = line2.length
+        val k = lx(max, n)
+        var s = ""
+        for (i in 1..k)
+            s += " "
+        val line3 = s + line2 + "\n"
+        writer.write(line3)
+    }
+    writer.close()
 }
 
 /**
@@ -144,7 +213,34 @@ fun centerFile(inputName: String, outputName: String) {
  * 8) Если входной файл удовлетворяет требованиям 1-7, то он должен быть в точности идентичен выходному файлу
  */
 fun alignFileByWidth(inputName: String, outputName: String) {
-    TODO()
+    var max = 0
+    for (line in File(inputName).readLines()) {
+        val n = line.trim().length
+        if (n > max) max = n
+
+    }
+    val writer = File(outputName).bufferedWriter()
+    for (line in File(inputName).readLines()) {
+        val line2 = line.trim()
+        val n = line2.length
+        val k = max - n
+        val a = line.split(Regex("\\s+")) as MutableList
+        val q = a.size - 1
+        if (q > 0)
+            for (i in 0..k - 1 + q) {
+                a[i % q] += " "
+            }
+        var s = ""
+        for (i in 0 until q) {
+            s += a[i]
+
+        }
+
+
+        val line3 = s + "\n"
+        writer.write(line3)
+    }
+    writer.close()
 }
 
 /**
@@ -282,8 +378,71 @@ Suspendisse ~~et elit in enim tempus iaculis~~.
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
-    TODO()
+    val tagSign = listOf("*", "**", "~")
+    val stack = mutableListOf(" ")
+    val usingTags = mutableListOf(false, false, false)
+    val outputStream = File(outputName).bufferedWriter()
+    val emptyList = mutableListOf<Boolean>()
+    outputStream.write("<html><body><p>")
+    for (line in File(inputName).readLines())
+        if (line.isNotEmpty())
+            emptyList.add(false)
+        else
+            emptyList.add(true)
+    emptyList.add(true)
+    for ((counter, line) in File(inputName).readLines().withIndex()) {
+        if (counter < emptyList.indexOf(false))
+            outputStream.write("")
+        else if (emptyList[counter] && !emptyList[counter + 1])
+            outputStream.write("</p><p>")
+        else if (emptyList[counter] && emptyList[counter + 1])
+            outputStream.write("")
+        else {
+            var i = 0
+            while (i < line.length) {
+                if (i < line.length - 1 && line[i] == line[i + 1] && line[i].toString() == tagSign[0]) {
+                    outputStream.write("<")
+                    if (stack.last() == tagSign[1]) {
+                        outputStream.write("/")
+                        stack.remove(stack.last())
+                        usingTags[1] = false
+                    } else {
+                        stack.add(tagSign[1])
+                        usingTags[1] = true
+                    }
+                    outputStream.write("b>")
+                    i++
+                } else if (line[i].toString() == tagSign[0]) {
+                    outputStream.write("<")
+                    if (stack.last() == tagSign[0]) {
+                        outputStream.write("/")
+                        stack.remove(stack.last())
+                        usingTags[0] = false
+                    } else {
+                        stack.add(tagSign[0])
+                        usingTags[0] = true
+                    }
+                    outputStream.write("i>")
+                } else if (i < line.length - 1 && line[i] == line[i + 1] && line[i].toString() == tagSign[2]) {
+                    outputStream.write("<")
+                    if (!usingTags[2])
+                        usingTags[2] = true
+                    else {
+                        outputStream.write("/")
+                        usingTags[2] = false
+                    }
+                    outputStream.write("s>")
+                    i++
+                } else
+                    outputStream.write(line[i].toString())
+                i++
+            }
+        }
+    }
+    outputStream.write("</p></body></html>")
+    outputStream.close()
 }
+
 
 /**
  * Сложная (23 балла)

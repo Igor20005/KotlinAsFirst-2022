@@ -1,4 +1,4 @@
-@file:Suppress("UNUSED_PARAMETER", "ConvertCallChainIntoSequence")
+@file:Suppress("UNUSED_PARAMETER", "ConvertCallChainIntoSequence", "UNUSED_EXPRESSION")
 
 package lesson6.task1
 
@@ -127,7 +127,36 @@ fun bestLongJump(jumps: String): Int = TODO()
  * При нарушении формата входной строки, а также в случае отсутствия удачных попыток,
  * вернуть -1.
  */
-fun bestHighJump(jumps: String): Int = TODO()
+fun bestHighJump(jumps: String): Int {
+    if (jumps.isEmpty()) return -1
+    val allowedSymbols = setOf('%', '-', '+')
+    val parts = jumps.split(" ")
+    var buf = 0
+    var bestScore = -1
+    var isNumber = true
+    //true - число, false - %%-
+    for (part in parts) {
+        when {
+            isNumber -> {
+                buf = 0
+                try {
+                    buf += part.toInt()
+                } catch (e: NumberFormatException) {
+                    return -1
+                }
+            }
+
+            !isNumber ->
+                for (symbol in part)
+                    if ((symbol == '+') && (buf > bestScore) && !isNumber) bestScore = buf
+                    else
+                        if (symbol !in allowedSymbols) return -1
+        }
+        isNumber = !isNumber
+    }
+    return bestScore
+}
+
 
 /**
  * Сложная (6 баллов)
@@ -149,7 +178,20 @@ fun plusMinus(expression: String): Int = TODO()
  * Вернуть индекс начала первого повторяющегося слова, или -1, если повторов нет.
  * Пример: "Он пошёл в в школу" => результат 9 (индекс первого 'в')
  */
-fun firstDuplicateIndex(str: String): Int = TODO()
+fun firstDuplicateIndex(str: String): Int {
+    val word = str.lowercase()
+    val list: List<String> = word.split(" ").toList()
+    var i = 0
+    var result = 0
+    if (list.size > 1) {
+        while (list[i] != list[i + 1]) {
+            result += list[i].count() + 1
+            i += 1
+            if (i > list.size) return -1
+        }
+    } else return -1
+    return result
+}
 
 /**
  * Сложная (6 баллов)
@@ -213,4 +255,79 @@ fun fromRoman(roman: String): Int = TODO()
  * IllegalArgumentException должен бросаться даже если ошибочная команда не была достигнута в ходе выполнения.
  *
  */
-fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> = TODO()
+fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
+    var positionId = cells / 2
+    val allowedCommandsAndSymbols = setOf('[', ']', '+', '-', '>', '<', ' ')
+    val cellRow = MutableList(cells) { 0 }
+    if (commands.isEmpty()) return cellRow
+    var cmdCounter = limit // command count
+    var k = 0 // command id
+    var braceBalance = 0
+    for (command in commands) {
+        when (command) {
+            '[' -> ++braceBalance
+            ']' -> --braceBalance
+            !in allowedCommandsAndSymbols -> throw IllegalArgumentException()
+        }
+        if (braceBalance < 0) throw IllegalArgumentException()
+    }
+    if (braceBalance != 0) throw IllegalArgumentException()
+    fun bodyCycleSizeFun(k: Int): Int {         // узнать размер текущего цикла
+        var z = 1
+        while (commands[k + z] != ']') {
+            if (commands[k + z] == '[') z += bodyCycleSizeFun(k + z)
+            ++z
+        }
+        return z
+    }
+
+    fun cycle(): MutableList<Int> {
+        var cycleDeactivated = false
+        var cycleBodySize = 0
+        while (!(cycleDeactivated) && (cmdCounter > 0)) {
+            --cmdCounter
+            when (commands[k]) {
+                '>' -> if (positionId + 1 >= cells) throw IllegalStateException() else positionId += 1
+                '<' -> if (positionId - 1 < 0) throw IllegalStateException() else positionId -= 1
+                '+' -> cellRow[positionId] += 1
+                '-' -> cellRow[positionId] -= 1
+                '[' -> {
+                    cycleBodySize += bodyCycleSizeFun(k) //размер текущего цикла + цикл,
+                    // который берёт начало в этом цикле
+                    if (cellRow[positionId] != 0) {
+                        ++k; cycle() //тогда войти в цикл
+                    } else { //тогда пропустить этот цикл
+                        var j = 0
+                        val size = bodyCycleSizeFun(k)
+                        while (j < size) {
+                            ++k
+                            ++j
+                        }
+                    }
+                }
+
+                ']' -> {
+                    if (cellRow[positionId] != 0) {
+                        while (cycleBodySize > -1) {
+                            --k
+                            --cycleBodySize
+                        }
+
+                    } else {
+                        cycleDeactivated = true
+                        --k
+                    }
+                }
+
+                ' ' -> null
+                else -> throw IllegalArgumentException()
+            }
+            ++cycleBodySize //размер текущего цикла
+            ++k
+            if (k >= commands.length) return cellRow //если дошёл до конца строки команд
+        }
+        return cellRow
+    }
+    return cycle()
+
+}
