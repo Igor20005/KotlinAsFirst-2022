@@ -215,33 +215,36 @@ fun centerFile(inputName: String, outputName: String) {
 fun alignFileByWidth(inputName: String, outputName: String) {
     var max = 0
     for (line in File(inputName).readLines()) {
-        val n = line.trim().length
-        if (n > max) max = n
-
+        val x = line.replace(" +".toRegex(), " ")
+        if (x.trim().length > max)
+            max = x.trim().length
     }
-    val writer = File(outputName).bufferedWriter()
+    val outputStream = File(outputName).bufferedWriter()
     for (line in File(inputName).readLines()) {
-        val line2 = line.trim()
-        val n = line2.length
-        val k = max - n
-        val a = line.split(Regex("\\s+")) as MutableList
-        val q = a.size - 1
-        if (q > 0)
-            for (i in 0..k - 1 + q) {
-                a[i % q] += " "
+        val x1 = line.replace(" +".toRegex(), " ")
+        val parts = Regex("""\s""").split(x1.trim()).toMutableList()
+        if (parts.size == 1) {
+            outputStream.write(x1.trim())
+            outputStream.newLine()
+        } else if (line.isNotBlank()) {
+            var temp = max - x1.trim().length
+            var i = 0
+            while (temp > 0) {
+                parts[i] += " "
+                if (i < parts.size - 2)
+                    i++
+                else
+                    i = 0
+                temp--
             }
-        var s = ""
-        for (i in 0 until q) {
-            s += a[i]
-
-        }
-
-
-        val line3 = s + "\n"
-        writer.write(line3)
+            outputStream.write(parts.joinToString(" "))
+            outputStream.newLine()
+        } else
+            outputStream.newLine()
     }
-    writer.close()
+    outputStream.close()
 }
+
 
 /**
  * Средняя (14 баллов)
