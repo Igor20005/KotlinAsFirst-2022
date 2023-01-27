@@ -2,9 +2,7 @@
 
 package lesson3.task1
 
-import kotlin.math.PI
-import kotlin.math.abs
-import kotlin.math.sqrt
+import kotlin.math.*
 
 // Урок 3: циклы
 // Максимальное количество баллов = 9
@@ -93,12 +91,9 @@ fun digitNumber(n: Int): Int {
  * Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)
  */
 fun fib(n: Int): Int {
-    if (n == 1)
-        return 1
-    if (n == 2)
-        return 1
-
-    return fib(n - 1) + fib(n - 2)
+    val f = (1 + sqrt(5.0)) / 2.0
+    val f1 = (1 - sqrt(5.0)) / 2.0
+    return ((f.pow(n) - f1.pow(n)) / sqrt(5.0)).toInt()
 }
 
 /**
@@ -107,11 +102,11 @@ fun fib(n: Int): Int {
  * Для заданного числа n > 1 найти минимальный делитель, превышающий 1
  */
 fun minDivisor(n: Int): Int {
-    var i = 2
-    while (n % i != 0 && i <= n) {
-        i += 1
+    for (divisor in 2..ceil(sqrt(n.toDouble())).toInt()) {
+        if (n % divisor == 0)
+            return divisor
     }
-    return i
+    return n
 }
 
 /**
@@ -179,14 +174,7 @@ fun lcm(m: Int, n: Int): Int {
  * Взаимно простые числа не имеют общих делителей, кроме 1.
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
-fun isCoPrime(m: Int, n: Int): Boolean {
-    val k = m.coerceAtMost(n)
-    for (i in k downTo 2) {
-        if ((m % i == 0) && (n % i == 0))
-            return false
-    }
-    return true
-}
+fun isCoPrime(m: Int, n: Int): Boolean = lcm(m, n) == (m * n)
 
 /**
  * Средняя (3 балла)

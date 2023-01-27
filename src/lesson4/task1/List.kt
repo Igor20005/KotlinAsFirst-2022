@@ -254,12 +254,9 @@ fun factorize(n1: Int): List<Int> {
  * Множители в результирующей строке должны располагаться по возрастанию.
  */
 fun factorizeToString(n: Int): String {
-    val l = factorize(n)
-    var s: String = l[0].toString()
-    for (i in 1 until l.size) {
-        s += '*' + l[i].toString()
-    }
-    return s
+    var a = factorize(n)
+    val newList: List<String> = a.map { it.toString() }
+    return newList.joinToString(separator = "*")
 }
 
 /**

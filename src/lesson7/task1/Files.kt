@@ -2,6 +2,7 @@
 
 package lesson7.task1
 
+import ru.spbstu.wheels.toMap
 import java.io.File
 import java.util.*
 
@@ -266,7 +267,29 @@ fun alignFileByWidth(inputName: String, outputName: String) {
  * Ключи в ассоциативном массиве должны быть в нижнем регистре.
  *
  */
-fun top20Words(inputName: String): Map<String, Int> = TODO()
+fun top20Words(inputName: String): Map<String, Int> {
+    val map = mutableMapOf<String, Int>()
+    for (line in File(inputName).readLines()) {
+        val p = line
+        val p1 = "[^А-Яа-яA-Za-zё]".toRegex()
+        val p2 = line.replace(p1, " ")
+        val parts = p2.split(" ")
+        //line.trim()).toMutableList()
+        for (x in parts) {
+            if (x == "") continue
+            val x1 = x.lowercase()
+            map[x1] = (map[x1] ?: 0) + 1
+        }
+
+
+    }
+    val m1 = map.entries
+    var list = map.entries.sortedWith(compareByDescending { it.toPair().second }).take(20)
+    if (list.isEmpty()) return mutableMapOf()
+    val m2 = list
+    return list.toMap()
+
+}
 
 /**
  * Средняя (14 баллов)
@@ -332,7 +355,23 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
  * Обратите внимание: данная функция не имеет возвращаемого значения
  */
 fun chooseLongestChaoticWord(inputName: String, outputName: String) {
-    TODO()
+    val writer = File(outputName).bufferedWriter()
+    val list = mutableListOf<String>()
+    var max = 0
+    val result = mutableListOf<String>()
+    File(inputName).forEachLine {
+        if (it.lowercase().toSet().size == it.length) {
+            list.add(it)
+        }
+    }
+    for (i in list) {
+        if (i.length > max) max = i.length
+    }
+    for (i in list) {
+        if (i.length == max) result.add(i)
+    }
+    writer.write(result.joinToString(separator = ", "))
+    writer.close()
 }
 
 /**
@@ -381,69 +420,7 @@ Suspendisse ~~et elit in enim tempus iaculis~~.
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
-    val tagSign = listOf("*", "**", "~")
-    val stack = mutableListOf(" ")
-    val usingTags = mutableListOf(false, false, false)
-    val outputStream = File(outputName).bufferedWriter()
-    val emptyList = mutableListOf<Boolean>()
-    outputStream.write("<html><body><p>")
-    for (line in File(inputName).readLines())
-        if (line.isNotEmpty())
-            emptyList.add(false)
-        else
-            emptyList.add(true)
-    emptyList.add(true)
-    for ((counter, line) in File(inputName).readLines().withIndex()) {
-        if (counter < emptyList.indexOf(false))
-            outputStream.write("")
-        else if (emptyList[counter] && !emptyList[counter + 1])
-            outputStream.write("</p><p>")
-        else if (emptyList[counter] && emptyList[counter + 1])
-            outputStream.write("")
-        else {
-            var i = 0
-            while (i < line.length) {
-                if (i < line.length - 1 && line[i] == line[i + 1] && line[i].toString() == tagSign[0]) {
-                    outputStream.write("<")
-                    if (stack.last() == tagSign[1]) {
-                        outputStream.write("/")
-                        stack.remove(stack.last())
-                        usingTags[1] = false
-                    } else {
-                        stack.add(tagSign[1])
-                        usingTags[1] = true
-                    }
-                    outputStream.write("b>")
-                    i++
-                } else if (line[i].toString() == tagSign[0]) {
-                    outputStream.write("<")
-                    if (stack.last() == tagSign[0]) {
-                        outputStream.write("/")
-                        stack.remove(stack.last())
-                        usingTags[0] = false
-                    } else {
-                        stack.add(tagSign[0])
-                        usingTags[0] = true
-                    }
-                    outputStream.write("i>")
-                } else if (i < line.length - 1 && line[i] == line[i + 1] && line[i].toString() == tagSign[2]) {
-                    outputStream.write("<")
-                    if (!usingTags[2])
-                        usingTags[2] = true
-                    else {
-                        outputStream.write("/")
-                        usingTags[2] = false
-                    }
-                    outputStream.write("s>")
-                    i++
-                } else
-                    outputStream.write(line[i].toString())
-                i++
-            }
-        }
-    }
-    outputStream.write("</p></body></html>")
-    outputStream.close()
+    TODO()
 }
 
 

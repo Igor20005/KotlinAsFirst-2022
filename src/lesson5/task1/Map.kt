@@ -273,13 +273,8 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  * Например:
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
-fun canBuildFrom(chars: List<Char>, word: String): Boolean {
-    for (c in word) {
-        if (c !in chars)
-            return false
-    }
-    return true
-}
+fun canBuildFrom(chars: List<Char>, word: String): Boolean =
+    chars.map { it.lowercaseChar() }.containsAll(word.toSet().map { it.lowercaseChar() })
 
 /**
  * Средняя (4 балла)
@@ -445,13 +440,20 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
-    val n = list.size
-    for (i in 0..n - 2)
-        for (j in i + 1 until n) {
-            if (list[i] + list[j] == number)
-                return Pair(i, j)
+    var a = 0
+    var b = 1
+    if (list.isEmpty() || list.max() == 0) return -1 to -1
+    while ((list[a] + list[b] != number && a != b) || a != list.size - 1) {
+        b += 1
+        if (b == list.size) {
+            a += 1
+            b = 0
         }
-    return Pair(-1, -1)
+    }
+    return if (list[a] + list[b] == number && a != b) {
+        if (a > b) b to a
+        else a to b
+    } else -1 to -1
 }
 
 /**
@@ -518,3 +520,4 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
     return ans
 
 }
+

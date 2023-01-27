@@ -114,7 +114,16 @@ fun flattenPhoneNumber(phone: String): String = TODO()
  * Прочитать строку и вернуть максимальное присутствующее в ней число (717 в примере).
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
-fun bestLongJump(jumps: String): Int = TODO()
+fun bestLongJump(jumps: String): Int {
+    val split = jumps.split(" ")
+    var result = -1
+    for (i in split) {
+        if ((i !in "-%") && i.any { !it.isDigit() }) return -1
+        if (i.any { it.isDigit() })
+            result = maxOf(result, i.toInt())
+    }
+    return result
+}
 
 /**
  * Сложная (6 баллов)
@@ -217,7 +226,25 @@ fun mostExpensive(description: String): String = TODO()
  *
  * Вернуть -1, если roman не является корректным римским числом
  */
-fun fromRoman(roman: String): Int = TODO()
+fun fromRoman(roman: String): Int {
+    if (roman.isEmpty()) return -1
+    var answer = 0
+    var number: Int
+    for (i in roman.length - 1 downTo 0) {
+        number = when (roman[i]) {
+            'I' -> 1
+            'V' -> 5
+            'X' -> 10
+            'L' -> 50
+            'C' -> 100
+            'D' -> 500
+            'M' -> 1000
+            else -> return -1
+        }
+        if (4 * number < answer) answer -= number else answer += number
+    }
+    return answer
+}
 
 /**
  * Очень сложная (7 баллов)
@@ -292,11 +319,10 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
                 '+' -> cellRow[positionId] += 1
                 '-' -> cellRow[positionId] -= 1
                 '[' -> {
-                    cycleBodySize += bodyCycleSizeFun(k) //размер текущего цикла + цикл,
-                    // который берёт начало в этом цикле
+                    cycleBodySize += bodyCycleSizeFun(k)
                     if (cellRow[positionId] != 0) {
-                        ++k; cycle() //тогда войти в цикл
-                    } else { //тогда пропустить этот цикл
+                        ++k; cycle()
+                    } else {
                         var j = 0
                         val size = bodyCycleSizeFun(k)
                         while (j < size) {
@@ -322,9 +348,9 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
                 ' ' -> null
                 else -> throw IllegalArgumentException()
             }
-            ++cycleBodySize //размер текущего цикла
+            ++cycleBodySize
             ++k
-            if (k >= commands.length) return cellRow //если дошёл до конца строки команд
+            if (k >= commands.length) return cellRow
         }
         return cellRow
     }

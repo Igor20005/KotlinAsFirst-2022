@@ -4,10 +4,7 @@ package lesson2.task1
 
 //import com.sun.org.apache.xpath.internal.operations.Or
 import lesson1.task1.discriminant
-import kotlin.math.abs
-import kotlin.math.max
-import kotlin.math.min
-import kotlin.math.sqrt
+import kotlin.math.*
 
 // Урок 2: ветвления (здесь), логический тип (см. 2.2).
 // Максимальное количество баллов = 6
@@ -165,20 +162,16 @@ fun rookOrBishopThreatens(
  * Если такой треугольник не существует, вернуть -1.
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int {
-    val y: Double
-    val d: Double
     val x: Double = max(max(a, b), c)
-    val z: Double = min(min(a, b), c)
+    val y: Double = min(min(a, b), c)
+    val u: Double = (a + b + c) - (x + y)
 
-    y = (a + b + c) - x - z
-
-
-    if (x >= y + z)
-        return -1
-    d = x * x - y * y - z * z
-    if (d == 0.0) return 1
-    if (d < 0.0) return 0
-    return 2
+    return when {
+        x > y + u -> -1
+        x.pow(2) < y.pow(2) + u.pow(2) -> 0
+        x.pow(2) > y.pow(2) + u.pow(2) -> 2
+        else -> 1
+    }
 }
 
 /**
