@@ -86,30 +86,18 @@ fun deleteMarked(inputName: String, outputName: String) {
  *
  */
 fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
-    fun countAinB(a: String, b: String): Int {
-        var n = 0
-        var i = 0
-        var j: Int
-        j = b.indexOf(a, i)
-        while (j >= 0) {
-            n += 1
-            i = j + 1
-            j = b.indexOf(a, i)
-        }
-        return n
+    val result = mutableMapOf<String, Int>()
+    val listOfSubstrings = substrings.toSet().toList()
+    val text = File(inputName).readText().lowercase(Locale.getDefault())
+    for (i in listOfSubstrings.indices) {
+        if (!result.contains(listOfSubstrings[i]))
+            result[listOfSubstrings[i]] = 0
+        for (j in text.indices)
+            if (text.startsWith(listOfSubstrings[i].lowercase(Locale.getDefault()), j))
+                result[listOfSubstrings[i]] = result[listOfSubstrings[i]]!! + 1
     }
-
-    val map = mutableMapOf<String, Int>()
-    for (line in File(inputName).readLines()) {
-        for (s in substrings) {
-            map[s] = (map[s] ?: 0) + countAinB(s.lowercase(), line.lowercase())
-
-
-        }
-    }
-    return map
+    return result
 }
-
 
 /**
  * Средняя (12 баллов)
