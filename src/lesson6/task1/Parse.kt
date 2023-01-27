@@ -102,7 +102,13 @@ fun dateDigitToStr(digital: String): String = TODO()
  *
  * PS: Дополнительные примеры работы функции можно посмотреть в соответствующих тестах.
  */
-fun flattenPhoneNumber(phone: String): String = TODO()
+fun flattenPhoneNumber(phone: String): String =
+    if (!phone.contains(Regex("""\( *\)""")) &&
+        !phone.matches(Regex("""\+ ?\d""")) &&
+        phone.matches(Regex("""(\+? *\d[- \d]*(\([-\d ]+\)[-\d ]+)?)"""))
+    )
+        phone.filter { it !in " " && it !in "(" && it !in ")" && it !in "-" }
+    else ""
 
 /**
  * Средняя (5 баллов)
@@ -176,7 +182,23 @@ fun bestHighJump(jumps: String): Int {
  * Вернуть значение выражения (6 для примера).
  * Про нарушении формата входной строки бросить исключение IllegalArgumentException
  */
-fun plusMinus(expression: String): Int = TODO()
+fun plusMinus(expression: String): Int {
+    if (!"$expression + ".matches(Regex("""(\d+ [+-] )+"""))) {
+        throw IllegalArgumentException(expression)
+    }
+    val parts = Regex(""" """).split(expression)
+    var result = parts[0].toInt()
+    var i = 1
+    while (i < parts.size) {
+        result += parts[i + 1].toInt() *
+                when (parts[i].trim()) {
+                    "+" -> 1
+                    else -> -1
+                }
+        i += 2
+    }
+    return result
+}
 
 /**
  * Сложная (6 баллов)
@@ -213,7 +235,24 @@ fun firstDuplicateIndex(str: String): Int {
  * или пустую строку при нарушении формата строки.
  * Все цены должны быть больше нуля либо равны нулю.
  */
-fun mostExpensive(description: String): String = TODO()
+fun mostExpensive(description: String): String {
+    val des = "$description; "
+    if (!des.matches(Regex("""([^\s]+ \d+(\.\d+)?; )+""")))
+        return ""
+    val listOfGoods = Regex("""; """).split(description)
+    var maxPrice = -1.0
+    var expensiveGoods = ""
+    for (i in listOfGoods.indices) {
+        val goodsPrice = Regex(""" """).split(listOfGoods[i])
+        if (goodsPrice[1].contains(Regex("""[^\d.]"""))) {
+            return ""
+        } else if (goodsPrice[1].toDouble() > maxPrice) {
+            maxPrice = goodsPrice[1].toDouble()
+            expensiveGoods = goodsPrice[0]
+        }
+    }
+    return expensiveGoods
+}
 
 /**
  * Сложная (6 баллов)
